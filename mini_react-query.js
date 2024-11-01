@@ -5,6 +5,12 @@ function hashKey(queryKey) {
 class QueryClient {
   constructor() {
     this.cache = new Map();
+    this.listeners = new Set();
+  }
+
+  subscribe(listener) {
+    this.listeners.add(listener); // The listener here is a callback function
+    return () => this.listeners.delete(listener);
   }
 
   get(queryKey) {
@@ -22,6 +28,7 @@ class QueryClient {
   set(queryKey, data) {
     const hash = hashKey(queryKey);
     this.cache.set(hash, { ...this.cache.get(hash), ...data });
+    this.listeners.forEach((listener) => listener(queryKey)); // Calls the callback for each listerner with the queryKey
   }
 
   async obtain({ queryKey, queryFn }) {
@@ -32,6 +39,26 @@ class QueryClient {
       this.set(queryKey, { status: error, error });
     }
   }
+}
+
+function createObserver(queryClient, options) {
+  return {
+    subscribe(notify) {
+      const unsubscribe = queryClient.subscribe((queryKey) => {
+        if (hashKey(options.queryKey) === hashKey(queryKey)) {
+          notify();
+        }
+      });
+
+      queryClient.obtain(options);
+
+      return unsubscribe;
+    },
+
+    getSnapshot() {
+      return queryClient.get(options.queryKey);
+    },
+  };
 }
 
 const queryClient = new QueryClient();
