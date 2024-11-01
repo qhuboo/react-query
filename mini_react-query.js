@@ -21,7 +21,7 @@ class QueryClient {
 
   set(queryKey, data) {
     const hash = hashKey(queryKey);
-    this.cache.set(hash, data);
+    this.cache.set(hash, { ...this.cache.get(hash), ...data });
   }
 
   async obtain({ queryKey, queryFn }) {
