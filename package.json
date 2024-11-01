@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "name": "react-query",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mini_react-query.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
