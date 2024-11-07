@@ -10,7 +10,7 @@ class QueryClient {
 
   subscribe(listener) {
     this.listeners.add(listener); // The listener here is a callback function
-    return () => this.listeners.delete(listener);
+    return () => this.listeners.delete(listener); // Returns a function that allows the subscriber to unsubscribe
   }
 
   get(queryKey) {
